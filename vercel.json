@@ -1,6 +1,10 @@
 {
   "routes": [
     {
+      "src": "/mlv1",
+      "dest": "api/mlV1.py"
+    },
+    {
       "src": "/(.*)",
       "dest": "api/index.py"
     }
