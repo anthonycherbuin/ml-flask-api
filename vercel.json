@@ -5,6 +5,10 @@
       "dest": "api/mlV1.py"
     },
     {
+      "src": "/predict",
+      "dest": "api/mlV1.py"
+    },
+    {
       "src": "/(.*)",
       "dest": "api/index.py"
     }

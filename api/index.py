@@ -20,7 +20,7 @@ API_SPORT:Final = '22024c3164521322f129b054c31798f4'
 # Base URL for the API
 url:Final = 'https://v1.hockey.api-sports.io/games'
 url_odds:Final = 'https://v1.hockey.api-sports.io/odds'
-url_MLV1:Final = 'http://localhost:3000/mlv1'
+url_MLV1:Final = 'http://localhost:3000/predict'
 
 
 async def next_match(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -64,27 +64,38 @@ async def next_match(update: Update, context: ContextTypes.DEFAULT_TYPE):
             formatted_date = date_object.strftime("%d %B %Y at %HH%M")
 
 
-            # Parameters for the request
+            # Parameters for the request for the odds
             payload_odds = {
                 'bet': 1, #1 is the id of the bet called '3Way Result' Home/draw/Away
                 "game": match['id']
             }
 
-            # todo: finis integration of ML
-            responseMl = requests.request("GET",url_MLV1, headers=headers, params=payload)
-            # print('responseMl: ',responseMl.json())
+            # Parameters for the request for ML
+            payload_ML = {
+                'home_team': home_team,
+                "away_teams": 'gotteron'
+            }
 
+            #get odds for the match
             response_odds = requests.request("GET",url_odds, headers=headers, params=payload_odds)
             odds = response_odds.json()['response']
             response = ''
+
+
+            # call ML endpoint
+            responseMl = requests.post(url_MLV1, data=payload_ML)
+            mlAnswer = responseMl.json()
+            print('responseMl: ',mlAnswer)
+
 
             if not odds:
                 response = "⏳ oops, it's too early. Bookers have not opened the odds now. Try later."
             else:
                 # Calculate the breakeven odds based on the ML prediction
                 # Make the request to the API with no proxy
-                responseMl = requests.request("GET",url_MLV1, headers=headers, params=payload)
-                print('responseMl: ',responseMl)
+                # responseMl = requests.request("POST",url_MLV1, headers=headers, json=payload)
+                # print('responseMl: ',responseMl.json())
+
                 ml_probability = 0.60  # TODO: Replace this with the actual ML prediction
                 oddsOkFrom = round(1 / ml_probability, 2)
                 
