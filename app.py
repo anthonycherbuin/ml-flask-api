@@ -11,7 +11,6 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 from flask import Flask, request, jsonify, Response
 from fastai import *
-from fastai.basic_train import load_learner
 from fastai.vision.all import *
 
 
