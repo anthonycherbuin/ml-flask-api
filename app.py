@@ -20,7 +20,7 @@ API_SPORT:Final = '22024c3164521322f129b054c31798f4'
 # Base URL for the API
 url:Final = 'https://v1.hockey.api-sports.io/games'
 url_odds:Final = 'https://v1.hockey.api-sports.io/odds'
-url_MLV1:Final = 'http://localhost:3000/predict'
+url_MLV1:Final = 'https://python-telegram-bot-9rxn.onrender.com/predict'
 
 
 async def next_match(update: Update, context: ContextTypes.DEFAULT_TYPE):
