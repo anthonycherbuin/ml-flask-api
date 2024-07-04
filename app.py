@@ -1,14 +1,19 @@
 import os
 import json
-from flask import Flask
-from flask import request
-from flask import Response
 from datetime import datetime
 from typing import Final
 import requests
+import pandas as pd
+
 from telegram import Update
 from telegram.constants import ParseMode
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+
+from flask import Flask, request, jsonify, Response
+from fastai import *
+from fastai.basic_train import load_learner
+from fastai.vision.all import *
+
 
 app = Flask(__name__)
 TOKEN:Final = '7009352301:AAH3iq9mqT9mkSX-gweT4Q_ZS5wx6cpGPKk'
@@ -180,6 +185,43 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
 
 
+learn = load_learner('model_v1.pkl')
+
+
+#Route for ML values
+@app.route('/predict', methods=['POST'])
+def predict():
+    # Getting the data from the request
+    Home = request.form.get('home_team')
+    Away = request.form.get('away_team')  # Corrected from 'away_teams'
+    OddsTeamA = float(request.form.get('OddsTeamA'))
+    OddsX = float(request.form.get('OddsX'))
+    OddsTeamB = float(request.form.get('OddsTeamB'))
+
+    print("post incoming")
+
+    # Convert the incoming data to a DataFrame
+    new_data = pd.DataFrame({
+        'Home': [Home],  # Wrapped in a list
+        'Away': [Away],  # Wrapped in a list
+        'OddsTeamA': [OddsTeamA],
+        'OddsTeamB': [OddsTeamB],
+        'OddsX': [OddsX]
+    })
+
+    dl = learn.dls.test_dl(new_data)
+    # # Get predictions
+    preds, _ = learn.get_preds(dl=dl)
+    prediction = preds[0].tolist()  # Convert tensor to list for JSON serialization
+
+    # Return predictions
+    return jsonify({'prediction': prediction, 'away team: ': Away, 'home_team': Home})
+
+
+
+
+
+#Starting the telegram bot
 @app.route('/')
 def index():
     print('Starting bot...')
