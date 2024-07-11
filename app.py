@@ -1,9 +1,5 @@
 import pandas as pd
 
-from telegram import Update
-from telegram.constants import ParseMode
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
-
 from flask import Flask, request, jsonify
 from fastai.vision.all import *
 
