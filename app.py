@@ -1,8 +1,3 @@
-import os
-import json
-from datetime import datetime
-from typing import Final
-import requests
 import pandas as pd
 
 from telegram import Update
