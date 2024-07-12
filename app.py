@@ -2,8 +2,10 @@ import pandas as pd
 
 from flask import Flask, request, jsonify
 from fastai.vision.all import *
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Load the model
 learn = load_learner('model_v1.pkl')
